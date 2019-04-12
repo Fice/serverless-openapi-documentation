@@ -1,7 +1,7 @@
 // tslint:disable-next-line:no-var-requires
 const Ajv = require('ajv');
 const fs = require('fs');
-import { dereference } from '@jdw/jst/dist';
+import { dereference, get } from '@jdw/jst/dist';
 // tslint:disable-next-line no-submodule-imports
 import { validateSync as openApiValidatorSync } from 'swagger2openapi/validate';
 import * as uuid from 'uuid';
@@ -67,8 +67,13 @@ export class DefinitionGenerator {
             if (this.serverless) {
               this.serverless.cli.log('Dereferencing: \n' + JSON.stringify(id));
             }
-            const externalSchema = fs.readFileSync(id);
-            const jsonSchema = JSON.parse(externalSchema);
+            const splitted = id.split('#', 2);
+            const filename = splitted[0];
+            const externalSchema = fs.readFileSync(splitted); /* id */
+            let jsonSchema = JSON.parse(externalSchema);
+            if (splitted.length === 2) {
+              jsonSchema = get(jsonSchema, splitted[1]);
+            }
 
             if (this.serverless) {
               this.serverless.cli.log('-----\n' + JSON.stringify(ajv.compile(jsonSchema)));
