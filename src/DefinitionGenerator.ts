@@ -1,6 +1,6 @@
 // tslint:disable-next-line:no-var-requires
 const Ajv = require('ajv');
-var fs = require('fs'),
+const fs = require('fs');
 import { dereference } from '@jdw/jst/dist';
 // tslint:disable-next-line no-submodule-imports
 import { validateSync as openApiValidatorSync } from 'swagger2openapi/validate';
