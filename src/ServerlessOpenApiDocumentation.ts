@@ -1,4 +1,4 @@
-import { chalk as c} from 'chalk';
+const c = require('chalk')
 import * as fs from 'fs';
 import * as YAML from 'js-yaml';
 import { inspect } from 'util';
