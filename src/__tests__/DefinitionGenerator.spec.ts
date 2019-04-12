@@ -1,4 +1,5 @@
 import * as path from 'path';
+// tslint:disable-next-line:no-implicit-dependencies
 import * as Serverless from 'serverless';
 import { DefinitionGenerator } from '../DefinitionGenerator';
 import { merge } from '../utils';
