@@ -69,13 +69,16 @@ export class DefinitionGenerator {
           const filename = splitted[0];
           this.serverless.cli.log('Filename:' + filename);
           const externalSchema = fs.readFileSync(filename); /* id */
+          this.serverless.cli.log('sub -->');
           let jsonSchema = dereference(JSON.parse(externalSchema), referenceResolver);
+          this.serverless.cli.log('<-- out');
 
-          if (splitted.length === 2 && isPointer(splitted[1])) {
-            this.serverless.cli.log('Rel Reference:' + splitted[1]);
+          if (splitted.length === 2) {
+            const relReference = '#' + splitted[1];
+            this.serverless.cli.log('Rel Reference:' + relReference);
             this.serverless.cli.log('\n\nScheme to reference from\n--------\n\n\n' +
                                     JSON.stringify(jsonSchema) + '\n\n\n--------\n\n\n');
-            jsonSchema = get(jsonSchema, '#' + splitted[1]);
+            jsonSchema = get(jsonSchema, relReference);
             this.serverless.cli.log('\n\nNew referenced Scheme\n--------\n\n\n' +
                                     JSON.stringify(jsonSchema) + '\n\n\n--------\n\n\n');
           }
