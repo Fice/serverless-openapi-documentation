@@ -55,23 +55,27 @@ export class DefinitionGenerator {
 
     if (isIterable(models)) {
       const ajv = new Ajv();
-      this.serverless.cli.log(JSON.stringify(models));
+      this.serverless.cli.log("Let's go");
       for (const model of models) {
         if (!model.schema) {
           continue;
         }
+        this.serverless.cli.log('working on model: ' + model.name);
         this.definition.components.schemas[model.name] = this.cleanSchema(
 
           dereference(model.schema, (id) => {
+            if (this.serverless) {
+              this.serverless.cli.log('Dereferencing: \n' + JSON.stringify(id));
+            }
             const externalSchema = fs.readFileSync(id);
             const jsonSchema = JSON.parse(externalSchema);
 
             if (this.serverless) {
-              this.serverless.cli.log('Dereferencing: \n' + JSON.stringify(id) + '\n-----\n' + JSON.stringify(ajv.compile(jsonSchema)));
+              this.serverless.cli.log('-----\n' + JSON.stringify(ajv.compile(jsonSchema)));
             }
 
             return ajv.compile(jsonSchema).schema;
-           }),
+          }),
         );
       }
     }
