@@ -1,4 +1,4 @@
-import * as c from 'chalk';
+import chalk as c from 'chalk';
 import * as fs from 'fs';
 import * as YAML from 'js-yaml';
 import { inspect } from 'util';
