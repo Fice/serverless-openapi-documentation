@@ -1,10 +1,11 @@
-import { dereference } from '@jdw/jst';
+// tslint:disable-next-line:no-var-requires
+const Ajv = require('ajv');
+import { dereference } from '@jdw/jst/dist';
 // tslint:disable-next-line no-submodule-imports
 import { validateSync as openApiValidatorSync } from 'swagger2openapi/validate';
 import * as uuid from 'uuid';
 import { IDefinition, IDefinitionConfig, IOperation, IParameterConfig, IServerlessFunctionConfig } from './types';
 import { clone, isIterable, merge } from './utils';
-var Ajv = require('ajv');
 
 export class DefinitionGenerator {
   // The OpenAPI version we currently validate against
@@ -62,12 +63,12 @@ export class DefinitionGenerator {
           this.serverless.cli.log(JSON.stringify(model.schema));
         }
         this.definition.components.schemas[model.name] = this.cleanSchema(
-          
+
           dereference(model.schema, (id) => {
             if (this.serverless) {
               this.serverless.cli.log(JSON.stringify(id));
             }
-            return ajv.getSchema(id).schema
+            return ajv.getSchema(id).schema;
            }),
         );
       }

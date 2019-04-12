@@ -1,4 +1,5 @@
-const c = require('chalk')
+// tslint:disable-next-line:no-var-requires
+const c = require('chalk');
 import * as fs from 'fs';
 import * as YAML from 'js-yaml';
 import { inspect } from 'util';
