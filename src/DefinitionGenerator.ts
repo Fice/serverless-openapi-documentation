@@ -69,9 +69,11 @@ export class DefinitionGenerator {
             }
             const splitted = id.split('#', 2);
             const filename = splitted[0];
+            this.serverless.cli.log('Filename:' + filename);
             const externalSchema = fs.readFileSync(filename); /* id */
             let jsonSchema = JSON.parse(externalSchema);
             if (splitted.length === 2) {
+              this.serverless.cli.log('Rel Reference:' + splitted[1]);
               jsonSchema = get(jsonSchema, '#' + splitted[1]);
             }
 
