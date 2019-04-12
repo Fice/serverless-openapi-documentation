@@ -59,16 +59,14 @@ export class DefinitionGenerator {
         if (!model.schema) {
           continue;
         }
-        if (this.serverless) {
-          this.serverless.cli.log(JSON.stringify(model.schema));
-        }
         this.definition.components.schemas[model.name] = this.cleanSchema(
 
           dereference(model.schema, (id) => {
             if (this.serverless) {
-              this.serverless.cli.log(JSON.stringify(id));
+              this.serverless.cli.log('Dereferencing: \n' + JSON.stringify(id) + '\n-----\n' + JSON.stringify(ajv.compile(id)));
             }
-            return ajv.getSchema(id).schema;
+
+            return ajv.compile(id).schema;
            }),
         );
       }
