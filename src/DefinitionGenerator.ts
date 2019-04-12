@@ -57,7 +57,9 @@ export class DefinitionGenerator {
         }
 
         this.definition.components.schemas[model.name] = this.cleanSchema(
-          dereference(model.schema),
+          dereference(model.schema, (id) => {
+            return console.error(id);
+          }),
         );
       }
     }
