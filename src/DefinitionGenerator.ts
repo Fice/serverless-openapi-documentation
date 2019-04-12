@@ -61,31 +61,30 @@ export class DefinitionGenerator {
           continue;
         }
         this.serverless.cli.log('working on model: ' + model.name);
-        this.definition.components.schemas[model.name] = this.cleanSchema(
+        const referenceResolver = (id) => {
+          if (this.serverless) {
+            this.serverless.cli.log('Dereferencing: \n' + JSON.stringify(id));
+          }
+          const splitted = id.split('#', 2);
+          const filename = splitted[0];
+          this.serverless.cli.log('Filename:' + filename);
+          const externalSchema = fs.readFileSync(filename); /* id */
+          let jsonSchema = dereference(JSON.parse(externalSchema), referenceResolver);
 
-          dereference(model.schema, (id) => {
-            if (this.serverless) {
-              this.serverless.cli.log('Dereferencing: \n' + JSON.stringify(id));
-            }
-            const splitted = id.split('#', 2);
-            const filename = splitted[0];
-            this.serverless.cli.log('Filename:' + filename);
-            const externalSchema = fs.readFileSync(filename); /* id */
-            let jsonSchema = JSON.parse(externalSchema);
-            if (splitted.length === 2 && isPointer(splitted[1])) {
-              this.serverless.cli.log('Rel Reference:' + splitted[1]);
-              this.serverless.cli.log('\n\nScheme to reference from\n--------\n\n\n' +
-                                      JSON.stringify(jsonSchema) + '\n\n\n--------\n\n\n');
-              jsonSchema = get(jsonSchema, '#' + splitted[1]);
-              this.serverless.cli.log('\n\nNew referenced Scheme\n--------\n\n\n' +
-                                      JSON.stringify(jsonSchema) + '\n\n\n--------\n\n\n');
-            }
+          if (splitted.length === 2 && isPointer(splitted[1])) {
+            this.serverless.cli.log('Rel Reference:' + splitted[1]);
+            this.serverless.cli.log('\n\nScheme to reference from\n--------\n\n\n' +
+                                    JSON.stringify(jsonSchema) + '\n\n\n--------\n\n\n');
+            jsonSchema = get(jsonSchema, '#' + splitted[1]);
+            this.serverless.cli.log('\n\nNew referenced Scheme\n--------\n\n\n' +
+                                    JSON.stringify(jsonSchema) + '\n\n\n--------\n\n\n');
+          }
 
-            const result = ajv.compile(jsonSchema).schema;
-            this.serverless.cli.log('Compiled and stringified result\n-----\n' + JSON.stringify(ajv.compile(jsonSchema)));
-            return result;
-          }),
-        );
+          const result = ajv.compile(jsonSchema).schema;
+          this.serverless.cli.log('Compiled and stringified result\n-----\n' + JSON.stringify(ajv.compile(jsonSchema)));
+          return result;
+        };
+        this.definition.components.schemas[model.name] = this.cleanSchema(dereference(model.schema, referenceResolver));
       }
     }
 
