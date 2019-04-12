@@ -1,5 +1,6 @@
 // tslint:disable-next-line:no-var-requires
 const Ajv = require('ajv');
+var fs = require('fs'),
 import { dereference } from '@jdw/jst/dist';
 // tslint:disable-next-line no-submodule-imports
 import { validateSync as openApiValidatorSync } from 'swagger2openapi/validate';
@@ -62,11 +63,14 @@ export class DefinitionGenerator {
         this.definition.components.schemas[model.name] = this.cleanSchema(
 
           dereference(model.schema, (id) => {
+            const externalSchema = fs.readFileSync(id);
+            const jsonSchema = JSON.parse(externalSchema);
+
             if (this.serverless) {
-              this.serverless.cli.log('Dereferencing: \n' + JSON.stringify(id) + '\n-----\n' + JSON.stringify(ajv.compile(id)));
+              this.serverless.cli.log('Dereferencing: \n' + JSON.stringify(id) + '\n-----\n' + JSON.stringify(ajv.compile(jsonSchema)));
             }
 
-            return ajv.compile(id).schema;
+            return ajv.compile(jsonSchema).schema;
            }),
         );
       }
