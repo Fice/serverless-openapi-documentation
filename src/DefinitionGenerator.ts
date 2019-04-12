@@ -69,7 +69,7 @@ export class DefinitionGenerator {
             }
             const splitted = id.split('#', 2);
             const filename = splitted[0];
-            const externalSchema = fs.readFileSync(splitted); /* id */
+            const externalSchema = fs.readFileSync(filename); /* id */
             let jsonSchema = JSON.parse(externalSchema);
             if (splitted.length === 2) {
               jsonSchema = get(jsonSchema, splitted[1]);
