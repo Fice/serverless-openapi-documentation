@@ -53,7 +53,7 @@ export class DefinitionGenerator {
 
     if (isIterable(models)) {
       const ajv = new Ajv();
-      this.serverless.cli.error(JSON.stringify(models));
+      this.serverless.cli.log(JSON.stringify(models));
       for (const model of models) {
         if (!model.schema) {
           continue;
