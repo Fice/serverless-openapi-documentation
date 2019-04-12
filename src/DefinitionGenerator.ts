@@ -1,7 +1,7 @@
 // tslint:disable-next-line:no-var-requires
 const Ajv = require('ajv');
 const fs = require('fs');
-import { dereference, get } from '@jdw/jst/dist';
+import { dereference, get, isPointer } from '@jdw/jst/dist';
 // tslint:disable-next-line no-submodule-imports
 import { validateSync as openApiValidatorSync } from 'swagger2openapi/validate';
 import * as uuid from 'uuid';
@@ -72,8 +72,9 @@ export class DefinitionGenerator {
             this.serverless.cli.log('Filename:' + filename);
             const externalSchema = fs.readFileSync(filename); /* id */
             let jsonSchema = JSON.parse(externalSchema);
-            if (splitted.length === 2) {
+            if (splitted.length === 2 && isPointer(splitted[1])) {
               this.serverless.cli.log('Rel Reference:' + splitted[1]);
+              this.serverless.cli.log('\n\n\n--------\n\n\n' + JSON.stringify(jsonSchema) + '\n\n\n--------\n\n\n');
               jsonSchema = get(jsonSchema, '#' + splitted[1]);
             }
 
