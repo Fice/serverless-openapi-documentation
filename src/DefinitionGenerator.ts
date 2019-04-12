@@ -4,6 +4,7 @@ import { validateSync as openApiValidatorSync } from 'swagger2openapi/validate';
 import * as uuid from 'uuid';
 import { IDefinition, IDefinitionConfig, IOperation, IParameterConfig, IServerlessFunctionConfig } from './types';
 import { clone, isIterable, merge } from './utils';
+var Ajv = require('ajv');
 
 export class DefinitionGenerator {
   // The OpenAPI version we currently validate against
@@ -51,6 +52,7 @@ export class DefinitionGenerator {
     });
 
     if (isIterable(models)) {
+      const ajv = new Ajv();
       for (const model of models) {
         if (!model.schema) {
           continue;
@@ -58,8 +60,9 @@ export class DefinitionGenerator {
 
         this.definition.components.schemas[model.name] = this.cleanSchema(
           dereference(model.schema, (id) => {
-            return console.error(id);
-          }),
+            console.error(id);
+            return ajv.getSchema(id).schema
+           }),
         );
       }
     }
