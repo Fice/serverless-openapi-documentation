@@ -129,8 +129,6 @@ export class ServerlessOpenApiDocumentation {
     // Add Paths to OpenAPI Output from Function Configuration
     generator.readFunctions(funcConfigs);
 
-    // Process CLI Input options
-    const config = this.processCliInput();
 
     this.log(`${ c.bold.yellow('[VALIDATION]') } Validating OpenAPI generated output\n`);
 
