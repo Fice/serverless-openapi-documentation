@@ -61,7 +61,9 @@ export class DefinitionGenerator {
         this.definition.components.schemas[model.name] = this.cleanSchema(
           
           dereference(model.schema, (id) => {
-            this.serverless.cli.log(model.schema);
+            if (this.serverless) {
+              this.serverless.cli.log(model.schema);
+            }
             console.error(id);
             return ajv.getSchema(id).schema
            }),
