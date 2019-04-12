@@ -22,7 +22,7 @@ export class DefinitionGenerator {
    * Constructor
    * @param serviceDescriptor IServiceDescription
    */
-  constructor (config: IDefinitionConfig, serverless) {
+  constructor (config: IDefinitionConfig, private serverless) {
     this.config = clone(config);
   }
 
@@ -59,8 +59,9 @@ export class DefinitionGenerator {
         }
 
         this.definition.components.schemas[model.name] = this.cleanSchema(
-          this.serverless.cli.log('Please come again!');
+          
           dereference(model.schema, (id) => {
+            this.serverless.cli.log(model.schema);
             console.error(id);
             return ajv.getSchema(id).schema
            }),
