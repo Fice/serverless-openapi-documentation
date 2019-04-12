@@ -53,20 +53,20 @@ export class DefinitionGenerator {
 
     if (isIterable(models)) {
       const ajv = new Ajv();
+      this.serverless.cli.error(JSON.stringify(models));
       for (const model of models) {
         if (!model.schema) {
           continue;
         }
         if (this.serverless) {
-          this.serverless.cli.log(model.schema);
+          this.serverless.cli.log(JSON.stringify(model.schema));
         }
         this.definition.components.schemas[model.name] = this.cleanSchema(
           
           dereference(model.schema, (id) => {
             if (this.serverless) {
-              this.serverless.cli.log(model.schema);
+              this.serverless.cli.log(JSON.stringify(id));
             }
-            console.error(id);
             return ajv.getSchema(id).schema
            }),
         );
