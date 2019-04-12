@@ -52,6 +52,10 @@ export class ServerlessOpenApiDocumentation {
                 usage: 'File indentation in spaces [default: 2]',
                 shortcut: 'i',
               },
+              ref_location: {
+                usage: 'Loaction to look for $ref resolves',
+                shortcut: 'l',
+              },
             },
           },
         },
@@ -77,10 +81,12 @@ export class ServerlessOpenApiDocumentation {
       format: 'yaml',
       file: 'openapi.yml',
       indent: 2,
+      ref_location: '',
     };
 
     config.indent = this.serverless.processedInput.options.indent || 2;
     config.format = this.serverless.processedInput.options.format || 'yaml';
+    config.ref_location = this.serverless.processedInput.options.ref_location || '';
 
     if (['yaml', 'json'].indexOf(config.format.toLowerCase()) < 0) {
       throw new Error('Invalid Output Format Specified - must be one of "yaml" or "json"');
@@ -94,6 +100,7 @@ export class ServerlessOpenApiDocumentation {
       `format: "${c.bold.red(config.format)}",`,
       `output file: "${c.bold.red(config.file)}",`,
       `indentation: "${c.bold.red(String(config.indent))}"\n\n`,
+      `ref_location: "${c.bold.red(String(config.ref_location))}"\n\n`,
     );
 
     return config;
@@ -104,8 +111,12 @@ export class ServerlessOpenApiDocumentation {
    */
   private generate () {
     this.log(c.bold.underline('OpenAPI v3 Documentation Generator\n\n'));
+
+    // Process CLI Input options
+    const config = this.processCliInput();
+
     // Instantiate DocumentGenerator
-    const generator = new DefinitionGenerator(this.customVars.documentation, this.serverless);
+    const generator = new DefinitionGenerator(this.customVars.documentation, this.serverless, config.ref_location);
 
     generator.parse();
 

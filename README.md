@@ -43,6 +43,7 @@ openapi generate  ...................... Generate OpenAPI v3 Documentation
     --output / -o ...................... Output file location [default: openapi.yml|json]
     --format / -f ...................... OpenAPI file format (yml|json) [default: yml]
     --indent / -i ...................... File indentation in spaces [default: 2]
+    --ref_location / -l ................ Loaction to look for $ref resolves
     --help / -h   ...................... Help
 ```
 

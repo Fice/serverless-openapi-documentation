@@ -24,7 +24,7 @@ export class DefinitionGenerator {
    * Constructor
    * @param serviceDescriptor IServiceDescription
    */
-  constructor (config: IDefinitionConfig, private serverless) {
+  constructor (config: IDefinitionConfig, private serverless, private path: string) {
     this.config = clone(config);
   }
 
@@ -62,32 +62,19 @@ export class DefinitionGenerator {
         }
         this.serverless.cli.log('working on model: ' + model.name);
         const referenceResolver = (id) => {
+          this.serverless.cli.log('--> in');
           if (this.serverless) {
             this.serverless.cli.log('Dereferencing: \n' + JSON.stringify(id));
           }
-          const splitted = id.split('#', 2);
-          const filename = splitted[0];
-          this.serverless.cli.log('Filename:' + filename);
-          const externalSchema = fs.readFileSync(filename); /* id */
+          this.serverless.cli.log('Filename:' + id);
+          const externalSchema = fs.readFileSync(this.path + id); /* id */
           this.serverless.cli.log('sub -->');
-          let jsonSchema = dereference(JSON.parse(externalSchema), referenceResolver);
+          const jsonSchema = dereference(JSON.parse(externalSchema), referenceResolver);
           this.serverless.cli.log('<-- out');
-
-          if (splitted.length === 2) {
-            const relReference = '#' + splitted[1];
-            if (!isPointer(relReference)) {
-              throw Error(relReference + ': pointer is not a valid pointer');
-            }
-            this.serverless.cli.log('Rel Reference:' + relReference);
-            this.serverless.cli.log('\n\nScheme to reference from\n--------\n\n\n' +
-                                    JSON.stringify(jsonSchema) + '\n\n\n--------\n\n\n');
-            jsonSchema = get(jsonSchema, relReference);
-            this.serverless.cli.log('\n\nNew referenced Scheme\n--------\n\n\n' +
-                                    JSON.stringify(jsonSchema) + '\n\n\n--------\n\n\n');
-          }
 
           const result = ajv.compile(jsonSchema).schema;
           this.serverless.cli.log('Compiled and stringified result\n-----\n' + JSON.stringify(ajv.compile(jsonSchema)));
+          this.serverless.cli.log('out <--');
           return result;
         };
         this.definition.components.schemas[model.name] = this.cleanSchema(dereference(model.schema, referenceResolver));

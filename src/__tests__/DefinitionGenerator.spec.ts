@@ -29,7 +29,7 @@ describe('OpenAPI Documentation Generator', () => {
     await sls.variables.populateService();
 
     if ('documentation' in sls.service.custom) {
-      const docGen = new DefinitionGenerator(sls.service.custom.documentation, null);
+      const docGen = new DefinitionGenerator(sls.service.custom.documentation, null, '');
       docGen.parse();
        // Map function configurations
       const funcConfigs = sls.service.getAllFunctions().map((functionName) => {
