@@ -62,12 +62,13 @@ export class DefinitionGenerator {
         }
         this.serverless.cli.log('working on model: ' + model.name);
         const referenceResolver = (id) => {
+          const filename = this.path + id;
           this.serverless.cli.log('--> in');
           if (this.serverless) {
             this.serverless.cli.log('Dereferencing: \n' + JSON.stringify(id));
           }
-          this.serverless.cli.log('Filename:' + id);
-          const externalSchema = fs.readFileSync(this.path + id); /* id */
+          this.serverless.cli.log('Filename:' + filename);
+          const externalSchema = fs.readFileSync(filename); /* id */
           this.serverless.cli.log('sub -->');
           const jsonSchema = dereference(JSON.parse(externalSchema), referenceResolver);
           this.serverless.cli.log('<-- out');
