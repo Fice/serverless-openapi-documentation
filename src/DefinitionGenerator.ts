@@ -75,6 +75,9 @@ export class DefinitionGenerator {
 
           if (splitted.length === 2) {
             const relReference = '#' + splitted[1];
+            if (!isPointer(relReference)) {
+              throw Error(relReference + ': pointer is not a valid pointer');
+            }
             this.serverless.cli.log('Rel Reference:' + relReference);
             this.serverless.cli.log('\n\nScheme to reference from\n--------\n\n\n' +
                                     JSON.stringify(jsonSchema) + '\n\n\n--------\n\n\n');
