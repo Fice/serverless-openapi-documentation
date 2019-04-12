@@ -104,7 +104,7 @@ export class ServerlessOpenApiDocumentation {
   private generate () {
     this.log(c.bold.underline('OpenAPI v3 Documentation Generator\n\n'));
     // Instantiate DocumentGenerator
-    const generator = new DefinitionGenerator(this.customVars.documentation);
+    const generator = new DefinitionGenerator(this.customVars.documentation, this.serverless);
 
     generator.parse();
 
