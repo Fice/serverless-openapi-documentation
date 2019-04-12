@@ -72,7 +72,7 @@ export class DefinitionGenerator {
             const externalSchema = fs.readFileSync(filename); /* id */
             let jsonSchema = JSON.parse(externalSchema);
             if (splitted.length === 2) {
-              jsonSchema = get(jsonSchema, splitted[1]);
+              jsonSchema = get(jsonSchema, '#' + splitted[1]);
             }
 
             if (this.serverless) {
