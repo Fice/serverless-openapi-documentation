@@ -57,7 +57,9 @@ export class DefinitionGenerator {
         if (!model.schema) {
           continue;
         }
-
+        if (this.serverless) {
+          this.serverless.cli.log(model.schema);
+        }
         this.definition.components.schemas[model.name] = this.cleanSchema(
           
           dereference(model.schema, (id) => {
