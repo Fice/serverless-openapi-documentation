@@ -1,5 +1,6 @@
 // tslint:disable-next-line:no-var-requires
 const Ajv = require('ajv');
+// tslint:disable-next-line:no-var-requires
 const fs = require('fs');
 import { dereference } from '@jdw/jst/dist';
 // tslint:disable-next-line no-submodule-imports
